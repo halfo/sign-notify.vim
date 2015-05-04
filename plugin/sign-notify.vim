@@ -1,11 +1,11 @@
-function! SignNotify()
+function! s:SignNotify()
 	if !exists('#goyo')
 		return
 	endif
 
 	redir => b:cmd
 	silent execute 'sign place buffer=' . bufnr('%')
-	redir end
+	redir END
 
 	let b:list = split(b:cmd, ' ')
 
@@ -22,5 +22,8 @@ function! SignNotify()
 	" return b:signs[1:]
 endfunction
 
-autocmd InsertEnter * call SignNotify()
-autocmd InsertLeave * call SignNotify()
+augroup signnotify
+	autocmd!
+	autocmd CursorMovedI * call s:SignNotify()
+	autocmd CursorMoved * call s:SignNotify()
+augroup END
