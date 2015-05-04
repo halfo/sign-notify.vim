@@ -1,7 +1,17 @@
+if !exists('g:sign_notify_plugin_list')
+	let g:sign_notify_plugin_list = []
+endif
+
 function! s:SignNotify()
-	if !exists('#goyo')
+	if empty(g:sign_notify_plugin_list)
 		return
 	endif
+
+	for i in g:sign_notify_plugin_list
+		if !exists(i)
+			return
+		endif
+	endfor
 
 	redir => b:cmd
 	silent execute 'sign place buffer=' . bufnr('%')

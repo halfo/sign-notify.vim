@@ -1,11 +1,21 @@
-function! SignNotify()
-	if !exists('#goyo')
+if !exists('g:sign_notify_plugin_list')
+	let g:sign_notify_plugin_list = []
+endif
+
+function! s:SignNotify()
+	if empty(g:sign_notify_plugin_list)
 		return
 	endif
 
+	for i in g:sign_notify_plugin_list
+		if !exists(i)
+			return
+		endif
+	endfor
+
 	redir => b:cmd
 	silent execute 'sign place buffer=' . bufnr('%')
-	redir end
+	redir END
 
 	let b:list = split(b:cmd, ' ')
 
@@ -22,5 +32,8 @@ function! SignNotify()
 	" return b:signs[1:]
 endfunction
 
-autocmd InsertEnter * call SignNotify()
-autocmd InsertLeave * call SignNotify()
+augroup signnotify
+	autocmd!
+	autocmd CursorMovedI * call s:SignNotify()
+	autocmd CursorMoved * call s:SignNotify()
+augroup END
